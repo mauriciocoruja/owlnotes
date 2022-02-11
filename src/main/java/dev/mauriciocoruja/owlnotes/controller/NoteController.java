@@ -1,6 +1,5 @@
 package dev.mauriciocoruja.owlnotes.controller;
 
-import dev.mauriciocoruja.owlnotes.datacache.CacheStore;
 import dev.mauriciocoruja.owlnotes.entities.Note;
 import dev.mauriciocoruja.owlnotes.entities.dto.NoteDTO;
 import dev.mauriciocoruja.owlnotes.entities.util.URL;
@@ -13,18 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/notes")
 public class NoteController {
 
-    @Autowired
-    CacheStore<Note> noteCacheStore;
-    @Autowired
-    Logger logger;
     @Autowired
     private NoteService noteService;
 
@@ -42,18 +35,7 @@ public class NoteController {
     @GetMapping("/id/")
     @Cacheable(value = "noteById")
     public ResponseEntity<Note> getNoteById(@RequestParam String id) {
-
-        Note cachedEmpRecord = noteCacheStore.get(id);
-
-        if (cachedEmpRecord != null) {
-            logger.log(Level.INFO, "Note record found in cache : {0}", noteCacheStore.get(id).getTitle());
-            return ResponseEntity.ok().body(cachedEmpRecord);
-        }
-
-        Note noteFromDataBase = this.noteService.findNoteById(id);
-        noteCacheStore.add(id, noteFromDataBase);
-
-        return ResponseEntity.ok().body(noteFromDataBase);
+        return ResponseEntity.ok().body(this.noteService.findNoteById(id));
     }
 
     @PostMapping("/new-note")
