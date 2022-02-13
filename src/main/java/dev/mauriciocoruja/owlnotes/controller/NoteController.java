@@ -2,6 +2,7 @@ package dev.mauriciocoruja.owlnotes.controller;
 
 import dev.mauriciocoruja.owlnotes.entities.Note;
 import dev.mauriciocoruja.owlnotes.entities.dto.NoteDTO;
+import dev.mauriciocoruja.owlnotes.entities.dto.pagination.PageDTO;
 import dev.mauriciocoruja.owlnotes.entities.util.URL;
 import dev.mauriciocoruja.owlnotes.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +30,14 @@ public class NoteController {
 
     @GetMapping
     @Cacheable(value = "allNotes")
-    public ResponseEntity<Page<NoteDTO>> getAllNotes(@RequestParam(name = "page") int page) {
+    public ResponseEntity<PageDTO<NoteDTO>> getAllNotes(@RequestParam(name = "page") int page) {
 
         Pageable pageable = PageRequest.of(page, this.notePerPage);
         Page<Note> allNotes = this.noteService.findAllNotes(pageable);
 
-        //TODO fazer um DTO para o pageble, semelhante ao da API do OpenBankink do Itau https://api.itau/open-banking/channels/v1/banking-agents
-
         return ResponseEntity
                 .ok()
-                .body(NoteDTO.converterToPage(allNotes));
+                .body(new PageDTO<>(allNotes));
     }
 
     @GetMapping("/id/")
