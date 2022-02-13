@@ -33,7 +33,7 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public Note createNote(NoteDTO note) {
         return noteRepository.insert(Note.builder()
-                .dataDeCriacao(LocalDateTime.now())
+                .createDate(LocalDateTime.now())
                 .title(note.getTitle())
                 .content(note.getContent())
                 .build());
@@ -47,7 +47,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     private void updateNoteData(NoteDTO note, Note n) {
-        n.setDataDeAtualizacao(LocalDateTime.now());
+        n.setUpdateDate(LocalDateTime.now());
         n.setTitle(note.getTitle());
         n.setContent(note.getContent());
     }

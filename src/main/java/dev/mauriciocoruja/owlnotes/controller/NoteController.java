@@ -8,9 +8,9 @@ import dev.mauriciocoruja.owlnotes.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,27 +22,19 @@ import java.util.stream.Collectors;
 @RequestMapping("/notes")
 public class NoteController {
 
-
-    private final int notePerPage = 5;
-
     @Autowired
     private NoteService noteService;
 
     @GetMapping
     @Cacheable(value = "allNotes")
-    public ResponseEntity<PageDTO<NoteDTO>> getAllNotes(@RequestParam(name = "page") int page,
-                                                        @RequestParam(
-                                                                name = "size",
-                                                                required = false,
-                                                                defaultValue = "5") int notePerPage) {
-
-        Page<Note> allNotes = this.noteService.findAllNotes(PageRequest.of(page, this.notePerPage));
+    public ResponseEntity<PageDTO<NoteDTO>> getAllNotes(@PageableDefault(
+            sort = "dataDeCriacao", direction = Sort.Direction.DESC) Pageable pagination) {
 
         //TODO implement a way to get URL to navigate through pages
 
         return ResponseEntity
                 .ok()
-                .body(new PageDTO<>(allNotes));
+                .body(new PageDTO<>(this.noteService.findAllNotes(pagination)));
     }
 
     @GetMapping("/id/")

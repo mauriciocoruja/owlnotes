@@ -15,8 +15,8 @@ public class Note implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     private String id;
-    private LocalDateTime dataDeCriacao;
-    private LocalDateTime dataDeAtualizacao;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
     private String title;
     private String content;
 }
