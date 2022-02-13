@@ -7,6 +7,9 @@ import dev.mauriciocoruja.owlnotes.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,18 +21,24 @@ import java.util.stream.Collectors;
 @RequestMapping("/notes")
 public class NoteController {
 
+
+    private final int notePerPage = 5;
+
     @Autowired
     private NoteService noteService;
 
     @GetMapping
     @Cacheable(value = "allNotes")
-    public ResponseEntity<List<NoteDTO>> getAllNotes() {
+    public ResponseEntity<Page<NoteDTO>> getAllNotes(@RequestParam(name = "page") int page) {
+
+        Pageable pageable = PageRequest.of(page, this.notePerPage);
+        Page<Note> allNotes = this.noteService.findAllNotes(pageable);
+
+        //TODO fazer um DTO para o pageble, semelhante ao da API do OpenBankink do Itau https://api.itau/open-banking/channels/v1/banking-agents
+
         return ResponseEntity
                 .ok()
-                .body(this.noteService.findAllNotes()
-                        .stream()
-                        .map(NoteDTO::new)
-                        .collect(Collectors.toList()));
+                .body(NoteDTO.converterToPage(allNotes));
     }
 
     @GetMapping("/id/")

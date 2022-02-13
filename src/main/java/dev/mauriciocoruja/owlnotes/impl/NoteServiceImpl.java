@@ -6,6 +6,8 @@ import dev.mauriciocoruja.owlnotes.service.exceptions.EntityNotFoundException;
 import dev.mauriciocoruja.owlnotes.repository.NoteRepository;
 import dev.mauriciocoruja.owlnotes.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,8 +20,8 @@ public class NoteServiceImpl implements NoteService {
     private NoteRepository noteRepository;
 
     @Override
-    public List<Note> findAllNotes() {
-        return this.noteRepository.findAll();
+    public Page<Note> findAllNotes(Pageable pageable) {
+        return this.noteRepository.findAll(pageable);
     }
 
     @Override
