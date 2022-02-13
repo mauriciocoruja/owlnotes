@@ -20,6 +20,11 @@ public class PageDTO<T> {
         this.pageInfo = PageableDTO.builder()
                 .pageNumber(page.getPageable().getPageNumber())
                 .pageSize(page.getPageable().getPageSize())
+                //TODO Uncoment here to get urls
+                /*.self("")*/
+                /*.first("")*/
+                /*.next("")*/
+                /*.last("")*/
                 .build();
         this.meta = MetaDTO.builder()
                 .totalRecords(page.getTotalElements())

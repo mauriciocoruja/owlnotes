@@ -30,10 +30,15 @@ public class NoteController {
 
     @GetMapping
     @Cacheable(value = "allNotes")
-    public ResponseEntity<PageDTO<NoteDTO>> getAllNotes(@RequestParam(name = "page") int page) {
+    public ResponseEntity<PageDTO<NoteDTO>> getAllNotes(@RequestParam(name = "page") int page,
+                                                        @RequestParam(
+                                                                name = "size",
+                                                                required = false,
+                                                                defaultValue = "5") int notePerPage) {
 
-        Pageable pageable = PageRequest.of(page, this.notePerPage);
-        Page<Note> allNotes = this.noteService.findAllNotes(pageable);
+        Page<Note> allNotes = this.noteService.findAllNotes(PageRequest.of(page, this.notePerPage));
+
+        //TODO implement a way to get URL to navigate through pages
 
         return ResponseEntity
                 .ok()
