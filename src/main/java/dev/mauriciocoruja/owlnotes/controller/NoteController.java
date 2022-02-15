@@ -25,7 +25,7 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
-    @GetMapping
+    @GetMapping(produces = "application/json")
     @Cacheable(value = "allNotes")
     public ResponseEntity<PageDTO<NoteDTO>> getAllNotes(@PageableDefault(
             sort = "dataDeCriacao", direction = Sort.Direction.DESC) Pageable pagination) {
@@ -37,13 +37,13 @@ public class NoteController {
                 .body(new PageDTO<>(this.noteService.findAllNotes(pagination)));
     }
 
-    @GetMapping("/id/")
+    @GetMapping(value = "/id/", produces = "application/json")
     @Cacheable(value = "noteById")
     public ResponseEntity<Note> getNoteById(@RequestParam String id) {
         return ResponseEntity.ok().body(this.noteService.findNoteById(id));
     }
 
-    @PostMapping("/new-note")
+    @PostMapping(value = "/new-note", produces = "application/json", consumes ="application/json")
     @CacheEvict(value = "allNotes")
     public ResponseEntity<NoteDTO> createNote(@RequestBody NoteDTO noteForm) {
         Note noteCreated = this.noteService.createNote(noteForm);
@@ -51,7 +51,7 @@ public class NoteController {
         return ResponseEntity.created(URI.create("/notes/" + noteCreated.getId())).body(note);
     }
 
-    @PutMapping("/update-note")
+    @PutMapping(value = "/update-note", produces = "application/json", consumes ="application/json")
     @CacheEvict(cacheNames = {"noteById", "allNotes"})
     public ResponseEntity<NoteDTO> updateNote(@RequestParam String id, @RequestBody NoteDTO noteForm) {
         Note updatedNote = this.noteService.updateNote(id, noteForm);
